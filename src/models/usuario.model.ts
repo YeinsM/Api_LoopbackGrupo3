@@ -36,6 +36,7 @@ export class Usuario extends Entity {
 
   @property({
     type: 'string',
+    generated: true,
   })
   password?: string;
 

@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {service} from '@loopback/core';
 import {
   Count,
@@ -9,15 +10,15 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
 import axios from 'axios';
-import {Usuario} from '../models';
+import {Credenciales, Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
 import {AuthService} from '../services';
-import {Credenciales} from '../models';
-import { HttpErrors} from '@loopback/rest';
+
+@authenticate("admin")
 
 export class UsuarioController {
   constructor(
@@ -27,6 +28,8 @@ export class UsuarioController {
     public servicioAuth: AuthService
   ) {}
 
+
+  @authenticate.skip()
   @post('/usuarios')
   @response(200, {
     description: 'Usuario model instance',
@@ -181,8 +184,8 @@ export class UsuarioController {
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.usuarioRepository.deleteById(id);
   }
-
   //Servicio de login
+  @authenticate.skip()
   @post('/login', {
     responses: {
       '200': {
